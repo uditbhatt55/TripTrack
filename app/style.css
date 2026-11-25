@@ -1,0 +1,33 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #eef2f9; color: #172543; font: 16px system-ui, sans-serif; }
+header { background: #172543; color: white; padding: 20px max(24px, calc((100% - 1160px)/2)); display: flex; justify-content: space-between; gap: 1rem; }
+header b { font-size: 1.45rem; }
+header span { align-self: center; color: #d2def7; }
+main { max-width: 1208px; margin: auto; padding: 26px 24px; display: grid; gap: 28px; grid-template-columns: 240px minmax(0, 1fr); }
+aside, section { background: white; border: 1px solid #dae3f2; border-radius: 16px; padding: 20px; }
+aside { align-self: start; }
+section { margin-bottom: 16px; }
+h1 { margin: 0 0 16px; font-size: clamp(1.8rem, 4vw, 2.7rem); }
+h2 { margin: 0 0 12px; font-size: 1.2rem; }
+p { margin: 0 0 12px; }
+form, nav { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+nav:not(:empty) { margin-bottom: 16px; }
+form label { display: grid; gap: 4px; flex: 1 1 135px; }
+input, select, button { font: inherit; border-radius: 8px; min-height: 40px; }
+input, select { border: 1px solid #92a3be; padding: 6px 9px; width: 100%; color: #172543; background: white; }
+button { border: 0; padding: 7px 14px; background: #294caa; color: white; cursor: pointer; font-weight: 600; }
+button:disabled { opacity: .65; cursor: default; }
+nav button { width: 100%; text-align: left; background: #e6edfc; color: #172543; }
+nav .active { background: #294caa; color: white; }
+.columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+fieldset { width: 100%; border: 1px solid #92a3be; border-radius: 8px; }
+.check { display: inline-flex; align-items: center; margin-right: 10px; }
+.check input { min-height: unset; width: auto; }
+summary { cursor: pointer; padding: 8px 0; border-bottom: 1px solid #dae3f2; }
+summary b, li b { margin-left: 4px; }
+ul { padding-left: 22px; }
+li { margin: 6px 0; }
+.error { background: #fde7e7; border: 1px solid #d98d8e; padding: 12px; border-radius: 8px; }
+@media(max-width: 800px) { main, .columns { grid-template-columns: 1fr; gap: 12px; } }
+
+.seed-form { margin-top: 12px; }
