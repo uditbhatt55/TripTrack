@@ -1,0 +1,102 @@
+.container {
+  container-type: inline-size;
+}
+
+.layout {
+  display: grid;
+  gap: 1rem;
+}
+
+@container (min-width: 40rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  }
+}
+
+.mapPanel {
+  min-width: 0;
+}
+
+.map {
+  isolation: isolate;
+  height: 24rem;
+  height: clamp(18rem, 52cqw, 26rem);
+  background: #e7ede8;
+  border: 1px solid var(--line, #dce4db);
+  border-radius: .8rem;
+  overflow-wrap: normal;
+}
+
+.marker {
+  background: #17493f;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 1px 5px #102c297d;
+}
+
+.marker:focus-visible {
+  outline: 3px solid #17493f;
+  outline-offset: 3px;
+}
+
+.popup {
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+.popup ul {
+  list-style: none;
+  margin: .4rem 0 0;
+  padding: 0;
+}
+
+.popup li + li {
+  margin-top: .55rem;
+}
+
+.status,
+.credits {
+  margin-top: .5rem;
+  font-size: .875rem;
+}
+
+.pinList {
+  max-height: 26rem;
+  overflow: auto;
+  border: 1px solid var(--line, #dce4db);
+  border-radius: .8rem;
+  padding: .75rem;
+}
+
+.pinList h3 {
+  margin: 0 0 .4rem;
+  font-size: 1rem;
+}
+
+.pinList .venues,
+.pinList .venues ul {
+  list-style: none;
+  padding: 0;
+}
+
+.pinList .venues {
+  margin: 0;
+}
+
+.venues > li + li {
+  border-top: 1px solid var(--line, #dce4db);
+  padding-top: .65rem;
+}
+
+.pinList .venues ul {
+  margin: .55rem 0;
+}
+
+.pinList button {
+  text-align: left;
+}
+
+.detail {
+  font-size: .875rem;
+  color: var(--muted, #52655f);
+}

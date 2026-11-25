@@ -3,3 +3,6 @@ node_modules/
 .env*
 !.env.example
 .triptrack-data.json
+.next-test/
+test-results/
+playwright-report/

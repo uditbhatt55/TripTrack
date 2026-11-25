@@ -1,20 +1,75 @@
-export type Member = { id: string; name: string };
-export type Expense = { id: string; title: string; payer: string; amount: number; shares: Record<string, number>; category?: string; date?: string; venue?: string };
-export type Payment = { from: string; to: string; amount: number };
-export type Trip = { id: string; name: string; members: Member[]; expenses: Expense[]; payments: Payment[] };
+﻿import type { VenueMatch } from './venues';
 
-export function split(amount: number, participants: string[]) {
+export type Member = { id: string; name: string; userId?: string; email?: string };
+export type Expense = {
+  id: string;
+  title: string;
+  payer: string;
+  amount: number;
+  shares: Record<string, number>;
+  originalShares?: Record<string, number>;
+  sponsored?: string[];
+  category?: string;
+  date?: string;
+  venue?: string;
+  city?: string;
+  place?: VenueMatch;
+  candidates?: VenueMatch[];
+  lookup?: 'pending' | 'matched' | 'choose' | 'failed';
+  locationVersion?: string;
+  createdBy?: string;
+  createdAt?: string;
+};
+export type Payment = {
+  id?: string; from: string; to: string; amount: number;
+  date?: string; recordedBy?: string;
+};
+export type Waiver = { expenseId: string; member: string; payer: string; amount: number; date: string };
+export type Invitation = { memberId: string; hash: string; expiresAt: string; redeemedAt?: string };
+export type Activity = {
+  id: string;
+  kind: 'expense' | 'edit' | 'member' | 'join' | 'payment' | 'waiver';
+  date: string;
+  text: string;
+  hiddenFrom?: string;
+};
+export type Trip = {
+  id: string;
+  name: string;
+  city?: string;
+  owner?: string;
+  members: Member[];
+  expenses: Expense[];
+  payments: Payment[];
+  waivers?: Waiver[];
+  invites?: Invitation[];
+  activity?: Activity[];
+  submissions?: { id: string; fingerprint: string }[];
+};export function split(amount: number, participants: string[]) {
   return Object.fromEntries([...participants].sort().map((id, index) => [
     id, Math.floor(amount / participants.length) + Number(index < amount % participants.length),
   ]));
 }
 
-export function explain(trip: Trip, member: string) {
+export function explain(trip: Trip, member: string, hideOwnWaivers = false) {
+  const waivers = trip.waivers ?? [];
   return [
-    ...trip.expenses.map(expense => ({
-      label: expense.title,
-      amount: (expense.payer === member ? expense.amount : 0) - (expense.shares[member] ?? 0),
-    })),
+    ...trip.expenses.map(expense => {
+      const waived = hideOwnWaivers
+        ? waivers.find(row => row.expenseId === expense.id && row.member === member)?.amount ?? 0
+        : 0;
+      return {
+        label: expense.title,
+        amount: (expense.payer === member ? expense.amount : 0) - (expense.shares[member] ?? 0) + waived,
+      };
+    }),
+    ...waivers.flatMap(waiver => {
+      const name = (id: string) => trip.members.find(row => row.id === id)?.name ?? 'member';
+      const expense = trip.expenses.find(row => row.id === waiver.expenseId)?.title ?? 'expense';
+      if (waiver.member === member && !hideOwnWaivers) return [{ label: 'Share waived for ' + expense, amount: waiver.amount }];
+      if (waiver.payer === member) return [{ label: 'Waiver for ' + name(waiver.member) + ' on ' + expense, amount: -waiver.amount }];
+      return [];
+    }),
     ...trip.payments.flatMap(payment => {
       if (payment.from === member) return [{label: 'Payment sent', amount: payment.amount}];
       if (payment.to === member) return [{label: 'Payment received', amount: -payment.amount}];
@@ -22,7 +77,6 @@ export function explain(trip: Trip, member: string) {
     }),
   ];
 }
-
 export function summarize(trip: Trip) {
   const balances = trip.members.map(member => ({
     ...member, amount: explain(trip, member.id).reduce((sum, row) => sum + row.amount, 0),
@@ -82,3 +136,5 @@ function matchTransfers(balances: Balance[]): Payment[] {
   }
   return suggestions;
 }
+
+
